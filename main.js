@@ -48,6 +48,15 @@ const operate = function(operand1, operator, operand2) {
     }
 }
 
+// populate display
+const popDisplay = function() {
+    let result = document.querySelector('.result');
+    let btns = document.querySelectorAll('button');
+    btns.forEach((curr) => curr.addEventListener('click', () => {
+        result.textContent += curr.textContent;
+    }))
+}
+
 // tests
 // basic arithmetic
 console.log(add(6, 3));
@@ -60,3 +69,4 @@ console.log(operate(6, '+', 3));
 console.log(operate(6, '-', 3));
 console.log(operate(6, '*', 3));
 console.log(operate(6, '/', 3));
+popDisplay();
