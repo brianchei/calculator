@@ -29,19 +29,19 @@ const divide = function(dividend, divisor) {
 };
 
 // operation methods
-const operate = function(operand1, operator, operand2) {
+const operate = function(num1, operator, num2) {
     switch (operator) {
         case '+':
-            return add(operand1, operand2);
+            return add(num1, num2);
             break;
         case '-':
-            return subtract(operand1, operand2);
+            return subtract(num1, num2);
             break;
         case '*':
-            return multiply(operand1, operand2);
+            return multiply(num1, num2);
             break;
         case '/':
-            return divide(operand1, operand2);
+            return divide(num1, num2);
             break;
         default:
             throw new Error('Unrecognized operator, please try again!');
@@ -53,9 +53,32 @@ const popDisplay = function() {
     let result = document.querySelector('.result');
     let btns = document.querySelectorAll('button');
     btns.forEach((curr) => curr.addEventListener('click', () => {
-        result.textContent += curr.textContent;
-    }))
+        result.value += curr.textContent;
+
+        let value = result.value;
+        if (!(Number(value))) {
+            try {
+        let parts = value.split(/[+\-*\/]/);
+        if (!(parts.length < 2)) {
+            let operatorIndex = value.includes('+') ? value.indexOf('+') : value.includes('-') ? value.indexOf('-') : value.includes('*') ? value.indexOf('*') : value.includes('/') ? value.indexOf('/') : null;
+            operand1 = value.slice(0, operatorIndex);
+            operator = value.slice(operatorIndex, operatorIndex + 1);
+            operand2 = value.slice(operatorIndex + 1);
+            result.value = operate(operand1, operator, operand2);
+        }
+        return;
+    } catch (error) {
+        console.log("Error! Invalid character input!");
+    } finally {
+        return;
+    }
 }
+    }));
+}
+
+// perform calculation
+let resultDisplay = document.querySelector('.result');
+let result = resultDisplay.value;
 
 // tests
 // basic arithmetic

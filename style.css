@@ -53,8 +53,12 @@ body {
 }
 
 .result {
+    display: flex;
+    flex: auto;
     font-size: 32px;
     margin: 0px 8px;
+    justify-content: end;
+    text-align: right;
 }
 
 .buttons {
@@ -103,7 +107,11 @@ body {
 }
 
 .clear {
+    display: flex;
+}
 
+.equals {
+    display: flex;
 }
 
 .button {
