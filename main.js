@@ -24,6 +24,9 @@ const multiply = function(multiplicand, multiplier) {
 };
 
 const divide = function(dividend, divisor) {
+    if (divisor === '0') {
+        return `Imagine that you have ${dividend} cookies and you split them evenly among zero friends. How many cookies does each person get? See? It doesn’t make sense. And Cookie Monster is sad that there are no cookies, and you are sad that you have no friends.`;
+    }
     let quotient = dividend / divisor;
     return quotient;
 };
@@ -55,16 +58,22 @@ const popDisplay = function() {
     let currTerm = 1;
     let expOperator = '';
     let term1 = '', term2 = '';
+    let solutionDisplayed = false;
     btns.forEach((curr) => curr.addEventListener('click', () => {
         let keyPressed = curr.textContent;
         if (keyPressed === 'CLEAR') {
             result.value = '';
+            expOperator = '', term1 = '', term2 = ''; currTerm = 1;
             return;
         }
         if (!(keyPressed === '+' || keyPressed === '-' || keyPressed === '*' || keyPressed === '/')) {
                 if (!(keyPressed === '=')) {
                     if (!(keyPressed === '.')) {
                         // # logic
+                        if (solutionDisplayed) {
+                            result.value = '';
+                            solutionDisplayed = false;
+                        }
                         if (!(currTerm === 1)) {
                             term2 += keyPressed;
                             result.value += keyPressed;
@@ -78,21 +87,41 @@ const popDisplay = function() {
                     if (currTerm === 1 && !(term1.includes('.'))) {
                         term1 += '.';
                         result.value += keyPressed;
+                        return;
                     }
                     if (currTerm === 2 && !(term2.includes('.'))) {
                         term2 += '.';
                         result.value += keyPressed;
+                        return;
                     }
                 }
                 // = logic
                 if (!(term2 === '')) {
-                    result.value = operate(term1, expOperator, term2);
+                    // round decimal if over 3 decimal places
+                    solution = operate(term1, expOperator, term2);
+                    solutionString = solution.toString();
+                    if (+solution
+                        && solutionString.includes('.') 
+                        && (solutionString.length - solutionString.indexOf('.')) > 4) {
+                        solution = solution.toFixed(3);
+                    }
+                    
+                    result.value = solution;
+                    solutionDisplayed = true;
                     expOperator = '', term1 = '', term2 = ''; currTerm = 1;
                     return;
                 }
                 return;
         }
         // +-*/ logic
+        // fix more than single pair of numbers
+        if (!(term2 === '')) {
+            solution = operate(term1, expOperator, term2);
+            result.value = solution + keyPressed;
+            solutionDisplayed = true;
+            expOperator = keyPressed, term1 = solution, term2 = ''; currTerm = 2;
+            return;
+        }
         // fix operator chosen after another operator
         if (!(expOperator === '')) {
             expOperator = keyPressed;
