@@ -1,7 +1,3 @@
-/*
-Pseudocode
-*/
-
 // universal variables
 let operand1;
 let operator;
@@ -31,7 +27,7 @@ const divide = function(dividend, divisor) {
     return quotient;
 };
 
-// operation methods
+// operation method
 const operate = function(num1, operator, num2) {
     switch (operator) {
         case '+':
@@ -53,19 +49,77 @@ const operate = function(num1, operator, num2) {
 
 // populate display
 const popDisplay = function() {
+    // element selectors
     let result = document.querySelector('.result');
-    let btns = document.querySelectorAll('button');
+    let btns = document.querySelectorAll('.button');
+
+    // expression variables
     let currTerm = 1;
     let expOperator = '';
     let term1 = '', term2 = '';
     let solutionDisplayed = false;
-    btns.forEach((curr) => curr.addEventListener('click', () => {
-        let keyPressed = curr.textContent;
+
+    // listeners for input
+    document.addEventListener('keydown', handler);
+
+    btns.forEach(btn => {
+        btn.addEventListener('click', handler)
+    });
+
+    // map input to functionality
+    function handler(event) {
+        let keyPressed = '';        
+        // check/assign valid input
+        if (event.type === 'click') {
+            keyPressed = event.currentTarget.textContent;
+        } else {
+            switch (true) {
+                case (!isNaN(event.key)):
+                    keyPressed = event.key;
+                    break;
+                case (event.key === 'Enter'):
+                    keyPressed = '=';
+                    break;
+                case (event.key === 'Backspace'):
+                    keyPressed = 'DEL';
+                    break;
+                case (event.key === '+'):
+                    keyPressed = '+';
+                    break;
+                case (event.key === '-'):
+                    keyPressed = '-';
+                    break;
+                case (event.key === '*'):
+                    keyPressed = '*';
+                    break;
+                case (event.key === '/'):
+                    keyPressed = '/';
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        // clear functionality
         if (keyPressed === 'CLEAR') {
             result.value = '';
             expOperator = '', term1 = '', term2 = ''; currTerm = 1;
             return;
         }
+
+        // del functionality
+        if (keyPressed === 'DEL') {
+            if (currTerm === 1 && term1 != '') {
+                term1 = term1.slice(0, -1);
+                result.value = result.value.slice(0, -1);
+            } else if (currTerm === 2 && term2 != '') {
+                term2 = term2.slice(0, -1);
+                result.value = result.value.slice(0, -1);
+            }
+            return;
+        }
+
+        // button press logic flow, inverted if's
         if (!(keyPressed === '+' || keyPressed === '-' || keyPressed === '*' || keyPressed === '/')) {
                 if (!(keyPressed === '=')) {
                     if (!(keyPressed === '.')) {
@@ -114,6 +168,15 @@ const popDisplay = function() {
                 return;
         }
         // +-*/ logic
+        // case: operating on result (solution)
+        if (solutionDisplayed) {
+            term1 = result.value;
+            expOperator = keyPressed;
+            result.value += keyPressed;
+            currTerm = 2;
+            solutionDisplayed = false;
+            return;
+        }
         // fix more than single pair of numbers
         if (!(term2 === '')) {
             solution = operate(term1, expOperator, term2);
@@ -135,12 +198,13 @@ const popDisplay = function() {
             currTerm = 2;
             return;
         }
+        // default set first term to zero when operator input
         term1 = 0;
         expOperator = keyPressed;
         result.value += keyPressed;
         currTerm = 2;
         return;
-    }));
+    }
 }
 
 // perform calculation
@@ -159,41 +223,6 @@ console.log(operate(6, '+', 3));
 console.log(operate(6, '-', 3));
 console.log(operate(6, '*', 3));
 console.log(operate(6, '/', 3));
-popDisplay();
 
-// previous attempt
-/*
-result.keyPressed += keyPressed;
-let keyPressed = result.keyPressed;
-if (!(Number(keyPressed))) {
-    switch (true) {
-        case keyPressed.includes('+') && (keyPressed.indexOf('+') != keyPressed.length - 1):
-            operator = '+';
-            break;
-        case keyPressed.includes('-') && (keyPressed.indexOf('-') != keyPressed.length - 1):
-            operator = '-';
-            break;
-        case keyPressed.includes('*') && (keyPressed.indexOf('*') != keyPressed.length - 1):
-            operator = '*';
-            break;
-        case keyPressed.includes('/') && (keyPressed.indexOf('/') != keyPressed.length - 1):
-            operator = '/';
-            break;
-        default:
-            throw new Error("HELP");
-    }
-    try {
-        let parts = keyPressed.split(/[+\-*\/]/);
-        let operatorIndex = keyPressed.includes('+') ? keyPressed.indexOf('+') : keyPressed.includes('-') ? keyPressed.indexOf('-') : keyPressed.includes('*') ? keyPressed.indexOf('*') : keyPressed.includes('/') ? keyPressed.indexOf('/') : null;
-        operand1 = keyPressed.slice(0, operatorIndex);
-        operand2 = keyPressed.slice(operatorIndex + 1);
-        result.keyPressed = operate(operand1, operator, operand2);
-        
-        return;
-    } catch (error) {
-        console.log("Error! Invalid character input!");
-    } finally {
-        return;
-    }
-}
-*/
+// run program
+popDisplay();

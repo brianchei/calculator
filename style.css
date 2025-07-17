@@ -108,6 +108,8 @@ body {
 
 .clear {
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .equals {
