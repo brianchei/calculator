@@ -112,10 +112,13 @@ const popDisplay = function() {
             if (currTerm === 1 && term1 != '') {
                 term1 = term1.slice(0, -1);
                 result.value = result.value.slice(0, -1);
+                return;
             } else if (currTerm === 2 && term2 != '') {
                 term2 = term2.slice(0, -1);
                 result.value = result.value.slice(0, -1);
+                return;
             }
+            result.value = result.value.slice(0, -1);
             return;
         }
 
@@ -201,7 +204,7 @@ const popDisplay = function() {
         // default set first term to zero when operator input
         term1 = 0;
         expOperator = keyPressed;
-        result.value += keyPressed;
+        result.value += '0' + keyPressed;
         currTerm = 2;
         return;
     }
